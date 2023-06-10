@@ -25,13 +25,18 @@ def generate_text(prompt):
         response = openai.ChatCompletion.create(
             model=config.OPENAI_MODEL,
             messages=[
-                    {"role": "system", "content": """
-                        You are a rescue chat bot which can detect evacuation requests and mission people announcements in the telegram Chat History and provide concise digest for rescuers, citing all the details.
-                        You provide the digest in russian langugage for rescuers using this format for each request: location, town or village, address | situation | names, addresses, comments, phone numbers, and all other useful information | link to the User Message URL
-                        You are as detailed as possible, do not skip any information provided. You never add any excessive details which are not essential.
-                    """},
-                    {"role": "user", "content": prompt}
-                ],
+                {
+                    "role": "system", 
+                    "content": """
+                    As a rescue chat bot, your role is to scan through Telegram chat history to identify evacuation requests and reports of missing people. You will then generate a succinct summary for rescue teams, capturing all vital details. Maintain a high level of precision in your reports, leaving out no useful information, yet also ensuring you don't include any nonessential details.
+                    """
+                },
+                    # {"role": "system", "content": """
+                    #     You are a rescue chat bot which can detect evacuation requests and mission people announcements in the telegram Chat History and provide concise digest for rescuers, citing all the details.
+                    #     You are as detailed as possible, do not skip any information provided. You never add any excessive details which are not essential.
+                    # """},
+                {"role": "user", "content": prompt}
+            ],
             max_tokens=1000
         )
         return response.choices[0].message.content.strip()
@@ -52,7 +57,7 @@ async def get_messages(client, channel_username):
     # Get the last 10 messages from the channel
     messages = await client(GetHistoryRequest(
         peer=channel,
-        limit=10,
+        limit=30,
         offset_date=None,
         offset_id=0,
         max_id=0,
@@ -104,7 +109,11 @@ async def send_message_to_user(client, user_id, message):
 for channel_username in channels:
     all_messages, all_ids = client.loop.run_until_complete(get_messages(client, channel_username))
     if all_ids:
-        prompt = f'Chat History:\n{all_messages}\n\nConcise digest for Russian speaking rescue boat operators, to post into Telegram channel:'
+        prompt = f"""Chat History:\n{all_messages}
+
+
+Present a concise summary in Russian for rescue personnel. Each request should be broken down into separate items and formatted as follows: location (town or village, address) | situation | relevant details (names, addresses, comments, phone numbers, and any additional pertinent information) | link to the original user message URL.
+Summary: """
         if verbose:
             print(prompt)
         report = generate_text(prompt)

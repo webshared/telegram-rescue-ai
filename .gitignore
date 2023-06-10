@@ -1,6 +1,5 @@
 *.session
 config.py
-processed_messages.db
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
