@@ -20,7 +20,7 @@ Here's what we currently need:
 
 ### Install dependencies
 ```
-pip install openai duckdb telethon
+pip3 install openai duckdb telethon
 ```
 
 ### Update the config
@@ -32,6 +32,6 @@ Update `scripts/config.py` with your API keys, channel names, and preferred sett
 
 ### Run
 ```
-python ./srcipts/go.py
+python3 ./scripts/go.py
 ```
 
