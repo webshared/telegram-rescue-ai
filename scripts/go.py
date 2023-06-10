@@ -57,7 +57,7 @@ async def get_messages(client, channel_username):
     # Get the last 10 messages from the channel
     messages = await client(GetHistoryRequest(
         peer=channel,
-        limit=30,
+        limit=10,
         offset_date=None,
         offset_id=0,
         max_id=0,
