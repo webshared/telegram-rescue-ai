@@ -1,5 +1,5 @@
 *.session
-scripts/config.py
+config.py
 processed_messages.db
 
 # Byte-compiled / optimized / DLL files
